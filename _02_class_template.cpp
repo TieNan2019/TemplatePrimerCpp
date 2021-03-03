@@ -15,43 +15,70 @@ public:
 	/* 默认构造函数 —— 生成一个空指针 */
 	Blob(): data (std::make_shared<std::vector<value_type>>()) {}
 	/* 接收 initializer_list 的构造函数 */
-	Blob(std::initializer_list<value_type> il):
-	data(std::make_shared<std::vector<value_type>>(il)) {}
+	Blob(std::initializer_list<value_type> il);
 
 	/* Blob 中的元素数目 */
 	size_type size() const { return data->size(); }
 	bool empty() const { return data->empty(); }
 
 	/* 添加和删除元素 */
-	void push_back(const value_type &t) { data->push_back(t); }
+	void push_back(const value_type &t);
 
 	/* 移动构造 */
 	void push_back(value_type &&t) { data->push_back(std::move(t)); }
-	void pop_back() {
-		check(0, "pop back on empty Blob");
-		data->pop_back();
-	}
+
+	void pop_back();
 
 	/* 元素访问 */
-	value_type &back() {
-		check(0, "back on empty Blob");
-		return data->back();
-	}
+	value_type &back();
 
 	/* 随机访问 */
-	value_type &operator[](size_type i) {
-		check(i, "index out of range");
-		return (*data)[i];
-	}
+	value_type &operator[](size_type i);
 
 private:
 	std::shared_ptr<std::vector<value_type>> data;
 	/* 若 data[i] 无效, 抛出 msg */
-	void check(size_type i, const std::string &msg) const {
-		if (i >= data->size())
-			throw std::out_of_range(msg);
-	}
+	void check(size_type i, const std::string &msg) const;
 };
+
+
+template <typename T>
+Blob<T>::Blob(std::initializer_list<value_type> il):
+data(std::make_shared<std::vector<value_type>>(il)) {}
+
+
+template <typename T>
+void Blob<T>::pop_back() {
+	check(0, "pop back on empty Blob");
+	data->pop_back();
+}
+
+
+
+template <typename T>
+void Blob<T>::push_back(const value_type &t) {
+	data->push_back(t);
+}
+
+
+template <typename T>
+T &Blob<T>::operator[](size_type i) {
+	check(i, "index out of range");
+	return (*data)[i];
+}
+
+
+template <typename T>
+void Blob<T>::check(size_type i, const std::string &msg) const {
+	if (i >= data->size())
+		throw std::out_of_range(msg);
+}
+
+template <typename T>
+T &Blob<T>::back() {
+	check(0, "back on empty Blob");
+	return data->back();
+}
 
 
 
